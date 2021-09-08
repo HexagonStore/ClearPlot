@@ -14,6 +14,20 @@ Blocks-BlackList: #Caso não queira blacklist de blocos. Deixe -> Blocks-BlackLi
   - CHEST
   - ENDER_CHEST
 
+Formatter:
+  - '' #Deixe vazio!
+  - 'K'
+  - 'M'
+  - 'B'
+  - 'T'
+  - 'Q'
+  - 'QQ'
+  - 'S'
+  - 'SS'
+  - 'O'
+  - 'N'
+  - 'D'
+
 CP-Item:
   skull-url: ''
   material: GOLD_SPADE

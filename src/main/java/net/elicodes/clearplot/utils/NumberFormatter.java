@@ -1,17 +1,20 @@
 package net.elicodes.clearplot.utils;
 
+import net.elicodes.clearplot.Main;
+
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NumberFormatter {
+
     private static final Pattern PATTERN = Pattern.compile("^(\\d+\\.?\\d*)(\\D+)");
 
     private static List<String> suffixes;
 
     static {
-        suffixes = Arrays.asList("", "K", "M", "B", "T", "Q", "QQ", "S", "SS", "O", "N", "D");
+        suffixes = Main.getPlugin().config.getStringList("Formatter");
     }
 
     public static void changeSuffixes(List<String> suffixes) {

@@ -23,33 +23,26 @@ public class ClearPlotCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender s, Command cmd, String lb, String[] a) {
-        if(!(s instanceof Player)) {
-            for(String line : ConfigHelper.msgList("console")) {
-                s.sendMessage(line);
-            }
-            return true;
-        }
-        Player player = (Player) s;
         if(a.length == 0) {
-            showHelp(player);
+            showHelp(s);
             return true;
         }
 
         if(a[0].equalsIgnoreCase("give")) {
-            if (!player.hasPermission(config.getString("CMD Permission"))) {
-                showHelp(player);
+            if (!s.hasPermission(config.getString("CMD Permission"))) {
+                showHelp(s);
                 return true;
             }
 
             if (a.length < 3) {
-                player.sendMessage(ConfigHelper.msg("no_arguments.give"));
+                s.sendMessage(ConfigHelper.msg("no_arguments.give"));
                 return true;
             }
 
             Player target = Bukkit.getPlayer(a[1]);
             if (target == null) {
                 for(String line : ConfigHelper.msgList("no_player")) {
-                    player.sendMessage(line);
+                    s.sendMessage(line);
                 }
                 return true;
             }
@@ -58,21 +51,28 @@ public class ClearPlotCommand implements CommandExecutor {
                 int quantia = Integer.parseInt(a[2]);
                 ItemStack cpItem = manager.getItem().clone();
                 cpItem.setAmount(quantia);
-                if(InventoryAPI.verifyInv(player)) {
+                if(InventoryAPI.verifyInv(target)) {
                     target.getInventory().addItem(cpItem);
                 }else {
                     for(String line : ConfigHelper.msgList("full")) {
-                        player.sendMessage(line.replace("@player", target.getName()));
+                        s.sendMessage(line.replace("@player", target.getName()));
                     }
                     return true;
                 }
                 for(String line : ConfigHelper.msgList("give")) {
-                    player.sendMessage(line.replace("@quantia", String.valueOf(quantia)).replace("@player", target.getName()));
+                    s.sendMessage(line.replace("@quantia", String.valueOf(quantia)).replace("@player", target.getName()));
                 }
             } catch (NumberFormatException ignored) {
-                player.sendMessage(ConfigHelper.msg("no_number"));
+                s.sendMessage(ConfigHelper.msg("no_number"));
             }
         }else if(a[0].equalsIgnoreCase("menu")) {
+            if(!(s instanceof Player)) {
+                for(String line : ConfigHelper.msgList("console")) {
+                    s.sendMessage(line);
+                }
+                return true;
+            }
+            Player player = (Player) s;
             if(manager.getCleaning().containsKey(player.getName().toLowerCase())) {
                 ClearTask task = manager.getCleaning().get(player.getName().toLowerCase());
                 Inventory inv = Bukkit.createInventory(null, ConfigHelper.menuInt("rows")*9, ConfigHelper.menu("name"));
@@ -93,18 +93,18 @@ public class ClearPlotCommand implements CommandExecutor {
                                 .toItemStack());
                 player.openInventory(inv);
             }else player.sendMessage(ConfigHelper.msg("no_process"));
-        }else showHelp(player);
+        }else showHelp(s);
         return false;
     }
 
-    private void showHelp(Player player) {
-        if(player.hasPermission(config.getString("CMD Permission"))) {
+    private void showHelp(CommandSender s) {
+        if(s.hasPermission(config.getString("CMD Permission"))) {
             for(String line : ConfigHelper.msgList("help_admin")) {
-                player.sendMessage(line);
+                s.sendMessage(line);
             }
         }else {
             for(String line : ConfigHelper.msgList("help")) {
-                player.sendMessage(line);
+                s.sendMessage(line);
             }
         }
     }
